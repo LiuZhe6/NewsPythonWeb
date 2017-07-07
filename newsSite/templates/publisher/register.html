@@ -1,10 +1,149 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>发布者注册</title>
+    <script type="text/javascript">
+        window.onload = function () {
+            //【1.验证密码的安全等级以及一致性】
+            //获取和确认密码框
+            var passTxt = document.querySelector("[name=password]");
+            var repass = document.getElementById('repass');
+            //声明一个变量，用于记录表单是否允许提交
+            var isSubmit = false;
+
+            //给密码框绑定失去焦点事件
+            passTxt.onblur = function (e) {
+                //获取密码框后面的提示语
+                var verfiypass = document.getElementById('verfiypass');
+                isSubmit = true;
+                if (repass.value == '') {
+                    isSubmit = false
+                    //alert('请填写确认密码')
+                }
+                if (this.value == '') {
+                    verfiypass.innerHTML = "当前密码为空哦！";
+                    verfiypass.style.color = 'red';
+                    //密码为空不能提交
+                    isSubmit = false
+
+                } else if (this.value.length <= 3) {
+                    verfiypass.innerHTML = "当前密码等级为：弱！";
+                    verfiypass.style.color = 'red'
+
+
+                } else if (this.value.length <= 6) {
+                    verfiypass.innerHTML = "当前密码等级为：中！";
+                    verfiypass.style.color = 'orange'
+
+                } else {//两次密码不一致不能提交
+                    verfiypass.innerHTML = "当前密码等级为：强！";
+                    verfiypass.style.color = 'green'
+
+                }
+            };
+            //验证两次密码是否一致
+            repass.onblur = function (e) {
+                //获取确认密码的提示语
+                var verfiyrepass = document.getElementById('verfiyrepass');
+
+                if (passTxt.value == '') {
+                    //判断密码是否为空
+                    isSubmit = false
+                } else if (repass.value == passTxt.value) {
+                    //两次密码一致
+                    verfiyrepass.innerHTML = '√';
+                    verfiyrepass.style.color = 'green';
+                    isSubmit = true;
+
+                } else {
+                    //两次密码不一致
+                    verfiyrepass.innerHTML = '两次密码不一致';
+                    verfiyrepass.style.color = 'red';
+                    //不允许提交
+                    isSubmit = false;
+
+                }
+            };
+
+            //2.【验证用户名是否可用】
+            var userTxt = document.querySelector('[name=username]');
+
+            userTxt.onblur = function (e) {
+                //ajax请求参数
+                var data = 'username='+userTxt.value;
+
+
+                //alert('我是用户名')
+                //在这里需要发出一个异步请求，去查询用户名是否可用
+                //1.创建ajax对象
+                var xhr = new XMLHttpRequest();
+                //2.监听ajax对象的状态
+                xhr.onreadystatechange = function (event) {
+                //每当ajax对象的一部请求进行一步，这个函数就会被调用一次
+                    //alert(xhr.readyState);
+                    /*整个ajax的请求与响应有四个阶段，每个阶段都对应着一个状态码
+                    1.则正在发送请求，即send方法开始调用
+                    2.请求发送完毕，请求没问题
+                    3.正在解析相应内容
+                    4.影响内容解析完毕(也就是说响应成功)*/
+                    //alert(xhr.status);
+                    if (xhr.readyState ==4){
+                        //说明响应成功
+                        if (xhr.status == 200){
+                            //说明相应内容正确
+                            //对相应内容的处理要在这里定义
+
+                            alert(xhr.responseText)
+                        }
+                    }
+                };
+
+
+                //3.建立链接
+                xhr.open("post", "ajaxhandle", true);
+                /**
+                 参数1：请求方法（post或get）
+                 参数2：请求的接口
+                 参数3：是否为异步请求
+                 */
+
+                //4.设置请求头
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');//固定写法
+                //5.发送数据
+                xhr.send(data);
+                //对于post请求，数据要在send里面通过参数的形式传递，
+
+
+            };
+
+
+            //处理提交按钮的提交事件
+            document.querySelector('[type=submit]').onclick = function (e) {
+                if (!isSubmit) {
+                    //阻止提交
+                    e.preventDefault()
+
+                }
+            }
+        }
+    </script>
 </head>
 <body>
-    注册页面
+<form method="post">
+    账户：<input type="text" name="username" placeholder="请输入用户名"><br><br>
+    密码：<input type="password" name="password" placeholder="请输入密码"><span id='verfiypass'></span><br><br>
+    确认密码：<input type="password" placeholder="请再次输入密码" id="repass"><span id='verfiyrepass'></span><br><br>
+    昵称：<input type="text" name="nickname" placeholder="请给自己设计一个昵称"><br><br>
+    性别：<input type="radio" name="sex" checked="checked" value="男">男
+    <input type="radio" name="sex" value="女">女<br><br>
+    个性签名：<br><textarea name="signature" placeholder="请给自己设计一个个性签名"></textarea><br><br>
+
+    <input type="submit" value="确认注册">
+    <input type="reset" value="重新填写">
+
+
+</form>
+
 </body>
 </html>
