@@ -11,12 +11,13 @@
             var repass = document.getElementById('repass');
             //声明一个变量，用于记录表单是否允许提交
             var isSubmit = false;
-
+            //声明一个变量，用于记录用户名是否存在
+            var isUserAvailable = false;
             //给密码框绑定失去焦点事件
             passTxt.onblur = function (e) {
                 //获取密码框后面的提示语
                 var verfiypass = document.getElementById('verfiypass');
-                isSubmit = true;
+
                 if (repass.value == '') {
                     isSubmit = false
                     //alert('请填写确认密码')
@@ -72,7 +73,7 @@
             userTxt.onblur = function (e) {
                 //ajax请求参数
                 var data = 'username='+userTxt.value;
-
+                var verfiyuser = document.getElementById('verfiyuser');
 
                 //alert('我是用户名')
                 //在这里需要发出一个异步请求，去查询用户名是否可用
@@ -93,8 +94,19 @@
                         if (xhr.status == 200){
                             //说明相应内容正确
                             //对相应内容的处理要在这里定义
-
-                            alert(xhr.responseText)
+                            if(xhr.responseText){
+                                //说明该用户名已经存在
+                                isUserAvailable = false;//用户名不可以用
+                                //不允许提交
+                                verfiyuser.innerHTML = '对不起，当前用户已经名花有主';
+                                verfiyuser.style.color = 'red';
+                            }else {
+                                //说明该用户名不存在，可以使用
+                                isUserAvailable = true;
+                                verfiyuser.innerHTML = '恭喜你！该用户名是可以用的!';
+                                verfiyuser.style.color = 'green';
+                            }
+                            //alert(xhr.responseText)
                         }
                     }
                 };
@@ -120,18 +132,18 @@
 
             //处理提交按钮的提交事件
             document.querySelector('[type=submit]').onclick = function (e) {
-                if (!isSubmit) {
+                if (!(isSubmit && isUserAvailable)) {
                     //阻止提交
                     e.preventDefault()
-
                 }
             }
         }
     </script>
 </head>
 <body>
-<form method="post">
-    账户：<input type="text" name="username" placeholder="请输入用户名"><br><br>
+<form method="post" action="pubregister">
+    账户：<input type="text" name="username" placeholder="请输入用户名">
+    <span id="verfiyuser"></span></span><br><br>
     密码：<input type="password" name="password" placeholder="请输入密码"><span id='verfiypass'></span><br><br>
     确认密码：<input type="password" placeholder="请再次输入密码" id="repass"><span id='verfiyrepass'></span><br><br>
     昵称：<input type="text" name="nickname" placeholder="请给自己设计一个昵称"><br><br>

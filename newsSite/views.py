@@ -46,4 +46,7 @@ def publisher_register(request):
 # ajax请求的响应
 def ajax_response(request):
     username = request.POST['username']
-    return HttpResponse(username)
+    # 查询前端传过来的用户名是否在数据库中
+    res = Publisher.objects.filter(username=username)
+    # 将查询的结果作为响应体返回
+    return HttpResponse(res)
