@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <!-- userinfo 里面记录了当前登陆者的所有信息 -->
+    <title>{{ userinfo.nickname }}的个人主页</title>
+    <!--内部引用-->
+    <style type="text/css">
+        /*
+            css语句结构:selector{样式1:值1;样式2:值2;..}
+            selector选择器，用于选中页面上的标签元素
+            选择器分类: id(#id值,根据id值选中)、标签(标签名，根据标签)、类别（.类别值）
+        */
+
+        /*一般情况下，页面上的元素会有一个默认的外边距和内边距*/
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #title {
+            width: 800px;
+            height: 50px;
+        {#            background: green;#} text-align: center;
+            margin: 10px auto;
+            /*margin是外边距,值有四种写法
+            一个值代表四个外边距全一样
+            两个值分别代表 上下 左右
+            三个值分别代表 上，左右，下
+            四个值分别代表上 右 下 左
+            */
+            line-height: 50px;
+            font-size: 30px;
+            color: purple;
+        }
+
+        #info {
+            height: 100px;
+        {% comment %}width: 500px;
+        background: yellowgreen;{% endcomment %} position: relative; /*让info成为其子元素的绝对定位的参照物*/
+
+        }
+
+        #info .headerimg {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+        }
+
+        #info .nickname {
+            position: absolute; /*给nickname一个绝对定位*/
+            top: 25px;
+            left: 85px;
+            font-size: 20px;
+            font-weight: 600; /*字体粗细 范围是100～700，默认是400，大于400为粗*/
+            color: darkblue;
+
+        }
+
+        #info .signature {
+            position: absolute;
+            left: 85px;
+            top: 60px;
+        }
+    </style>
+
+
+    {#    内部引用前端脚本#}
+    <script type="text/javascript">
+        function submitInfo(element) {
+            {#            根据不同的按钮的点击，提交到不同的网址。#}
+
+            var infoForm = document.getElementById('pubForm');
+
+            if (element.id === 'alter') {
+                //说明此时是修改按钮提交的，需要跳转到修改页面
+                {#                alert(element.id);#}
+                infoForm.action = "alterinfo";
+            } else {
+                //说明此时是发布新闻按钮提交的，需要跳转到发布新闻页面
+                {#                alert(element.id);#}
+
+                infoForm.action = "publishnews";
+
+            }
+            infoForm.submit();
+        }
+    </script>
+</head>
+<body>
+<h2 id="title">{{ userinfo.username }}的主页</h2>
+<div id="info">
+    <img src="xxx" class="headerimg">
+    <p class="nickname">{{ userinfo.nickname }}</p>
+    <p class="signature">{{ userinfo.signature }}</p>
+</div>
+
+<form method="post" id="pubForm">
+    <input type="hidden" name="userid" value="{{ userinfo.id }}">
+    <input type="hidden" name="flag" value="index">
+{#    flag是记录哪个页面提交的#}
+    <input type="button" id="alter" value="修改个人资料" onclick="submitInfo(this)">
+    <input type="button" id="publish" value="发布新闻" onclick="submitInfo(this)">
+</form>
+
+
+</body>
+</html>

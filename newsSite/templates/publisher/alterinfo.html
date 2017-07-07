@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ userinfo.nickname }}修改个人信息</title>
+</head>
+<body>
+<form method="post" >
+    昵&nbsp;&nbsp;称:<input type="text" name="nickname" value="{{ userinfo.nickname }}"><br/><br/>
+    个性签名:<textarea name="signature">
+        {{ userinfo.signature }}
+    </textarea> <br/><br/>
+    头&nbsp;&nbsp;像:<input type="file" name="headerimg"><br/><br/>
+    <input type="hidden" name="flag" value="alterinfo">
+    <input type="hidden" name="userid" value="{{ userinfo.id }}">
+    <input type="submit" value="确认修改">
+    <input type="button" value="返&nbsp;&nbsp;回">
+</form>
+</body>
+</html>
